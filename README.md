@@ -25,19 +25,14 @@ https://github.com/TomSchimansky/CustomTkinter
 - When you change any of the settings, the preview gets automatically refreshed
 - When satisfied, click on `(Capture Image)` button and the image will be captured
 - The image path will be displayed in the status box in `[Captured Images]` tab (default path: ~/Images). You can adjust this path in code OR browse for the image save location via `(Save Location)` button in the app
-- The captured image will be displayed in `[Captured Images]` tab
+- The captured image will be displayed in `[Captured Images]` tab. Note: in order to view the actual image, maximize/minimize/format it, you need to visit the image save location and open the image from there. The `[Captured Images]` tab only shows a quick preview of the captured image
 
 ## Screenshots
 * Note: The screenshots are not up to date. The latest app may look different than the images captured below  
 * Raspberry Pi camera app  
   ![Raspberry Pi Camera App](./images/rpi_image0.jpg)  
-* Change rotation angle  
-  ![Raspberry Pi Camera App Image Rotation Option](./images/rpi_image1.1.jpg)  
-* Change mode  
-  ![Raspberry Pi Camera App Image Mode Option](./images/rpi_image1.2.jpg)  
-* Camera app in action, can see preview by the side  ![Raspberry Pi Camera App Preview Mode](./images/rpi_image2.jpg)  
-* `(Capture)` button clicked, the image captured and path displayed  ![Raspberry Pi Camera App Image Captured](./images/rpi_image3.jpg)  
-* Opened captured image  ![Raspberry Pi Camera App Captured Image](./images/rpi_image4.jpg)  
+* Captured image by the app 
+  ![Raspberry Pi Camera App](./images/rpi_image1.jpg)  
 
 ## Releases
 |Release|Date|Features|

@@ -31,7 +31,7 @@ https://github.com/TomSchimansky/CustomTkinter
 * Note: The screenshots may not be up to date. The latest app may look different than the images captured below  
 * Raspberry Pi camera app  
   ![Raspberry Pi Camera App](./images/rpi_image0.jpg)  
-* Captured image by the app 
+* Captured image by the app   
   ![Raspberry Pi Camera App](./images/rpi_image1.jpg)  
 
 ## Releases

@@ -43,4 +43,4 @@ https://github.com/TomSchimansky/CustomTkinter
 |Release|Date|Features|
 |-------|----|--------|
 |0.0.1|Dec 26, 2022|Initial Release|
-|0.0.2|Dec 27, 2022|Added current image view inside the app, rounded buttons, allowed ability to select image save location, removed padding from rotation text|
+|0.0.2|Dec 27, 2022|Added current image view inside the app; rounded buttons; allowed ability to select image save location; removed padding from rotation text; changed rotation element UI type; added new elements for brightness, sharpness, contrast, saturation|

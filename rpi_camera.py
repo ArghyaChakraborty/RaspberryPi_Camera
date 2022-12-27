@@ -34,19 +34,22 @@ class App(customtkinter.CTk):
         self.frame = customtkinter.CTkFrame(master=self)
         self.frame.pack(pady=10, padx=10, fill="both", expand=True)
 
-        self.rotate_label = customtkinter.CTkLabel(master=self.frame, justify=tkinter.LEFT, text="Rotate 0"+self.default_camera_rotation_deg+" deg")
-        self.rotate_label.pack(pady=10, padx=10)
+        self.rotate_label = customtkinter.CTkLabel(master=self.frame, justify=tkinter.LEFT, text="Rotate "+self.default_camera_rotation_deg+" deg")
+        self.rotate_label.pack(pady=0, padx=10)
 
-        self.rotate_slider = customtkinter.CTkSlider(master=self.frame, command=self.set_rotation, from_=0, to=359, hover=True)
-        self.rotate_slider.pack(pady=10, padx=10)
+        self.rotate_slider = customtkinter.CTkSlider(master=self.frame, command=self.set_rotation, from_=0, to=359, number_of_steps=4, hover=True)
+        self.rotate_slider.pack(pady=0, padx=10)
         self.rotate_slider.set(int(self.default_camera_rotation_deg))
 
         self.mode_options = customtkinter.CTkOptionMenu(self.frame, values=self.mode_options, command=self.set_mode)
         self.mode_options.pack(pady=10, padx=10)
         self.mode_options.set("Modes")
 
-        self.capture_button = customtkinter.CTkButton(master=self.frame, command=self.capture_image, text="Capture")
-        self.capture_button.pack(pady=10, padx=10)
+        self.capture_button = customtkinter.CTkButton(master=self.frame, command=self.capture_image, text="Capture Image", corner_radius=90, width=5)
+        self.capture_button.pack(pady=10, padx=0)
+
+        self.file_save_location_button = customtkinter.CTkButton(master=self.frame, command=self.file_save_browse_button, text="Save Location", corner_radius=90, width=5)
+        self.file_save_location_button.pack(pady=10, padx=0)
 
         self.status_text = customtkinter.CTkTextbox(master=self.frame, width=int(self.monitor_width*0.3), height=50)
         self.status_text.pack(pady=0, padx=10)
@@ -107,7 +110,7 @@ class App(customtkinter.CTk):
         elif int_value >= 270 and int_value < 360:
             int_value = 359
         padded_value = str(int_value).rjust(3, "0")
-        self.rotate_label.configure(text="Rotate "+padded_value+" deg")
+        self.rotate_label.configure(text="Rotate "+str(int_value)+" deg")
         self.capture_characteristics["--rotation"] = int_value
         self.kill_preview()
         self.start_preview()
@@ -116,6 +119,19 @@ class App(customtkinter.CTk):
         self.capture_characteristics["--imxfx"] = value
         self.kill_preview()
         self.start_preview()
+
+    def file_save_browse_button(self):
+        from tkinter import filedialog
+        dirname = filedialog.askdirectory()
+        print(dirname)
+        self.capture_path = os.path.abspath(os.path.expandvars(os.path.expanduser(dirname)))+"/"
+        self.change_textbox_text(self.status_text, "Image save path: "+self.capture_path)
+
+    def change_textbox_text(self, textbox: customtkinter.CTkTextbox, new_text: str):
+        textbox.configure(state="normal")
+        textbox.delete("0.0", "100000.0")
+        textbox.insert("0.0", new_text)
+        textbox.configure(state="disabled")
 
     def capture_image(self):
         print(self.capture_characteristics)
@@ -132,13 +148,7 @@ class App(customtkinter.CTk):
             disk_image = Image.open(self.capture_path + image_name).resize((int(self.monitor_width*0.3), int(self.monitor_width*0.3)))
             img = customtkinter.CTkImage(disk_image, size=(int(self.monitor_width*0.3), int(self.monitor_width*0.3)))
 
-            self.status_text.configure(state="normal")
-            self.status_text.delete("0.0", "100000.0")
-            self.status_text.insert("0.0", self.capture_path + image_name)
-            self.status_text.configure(width = int(self.monitor_width*0.3))
-            self.status_text.configure(height = 50)
-            self.status_text.configure(state="disabled")
-
+            self.change_textbox_text(self.status_text, self.capture_path + image_name)
             self.status_label_image.configure(image=img)
 
             self.start_preview()

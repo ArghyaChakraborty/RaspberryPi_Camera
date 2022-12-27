@@ -1,6 +1,6 @@
 # Raspberry Pi Camera App
 ## Description
-This Python `tkinter` app provides some of the camera options provided by Raspberry Pi camera module `raspistill`
+This Python `tkinter` app provides some of the camera options provided by Raspberry Pi camera module `raspistill`. So far this app only captures still image. Video capabilities may be supported in future.
 
 ## raspistill command help
 Please check file [raspistill-help](raspistill-help)

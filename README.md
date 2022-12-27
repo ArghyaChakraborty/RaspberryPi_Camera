@@ -28,8 +28,8 @@ https://github.com/TomSchimansky/CustomTkinter
 - The captured image will be displayed in `[Captured Images]` tab. Note: in order to view the actual image, maximize/minimize/format it, you need to visit the image save location and open the image from there. The `[Captured Images]` tab only shows a quick preview of the captured image
 
 ## Screenshots
-* Note: The screenshots may not be up to date. The latest app may look different than the images captured below  
-* Raspberry Pi camera app  
+* Note: The screenshots may not be up to date. The latest app may look different from the images captured below  
+* Raspberry Pi camera app controls  
   ![Raspberry Pi Camera App](./images/rpi_image0.jpg)  
 * Captured image by the app   
   ![Raspberry Pi Camera App](./images/rpi_image1.jpg)  

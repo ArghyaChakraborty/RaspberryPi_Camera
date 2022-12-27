@@ -20,19 +20,6 @@ DEFAULT_SATURATION = 0
 customtkinter.set_appearance_mode("dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
-'''
--w, --width	: Set image width <size> X
--h, --height	: Set image height <size> X
-
--t, --timeout	: Time (in ms) before takes picture and shuts down (if not specified, set to 5s)
-
--sh, --sharpness	: Set image sharpness (-100 to 100) X
--co, --contrast	: Set image contrast (-100 to 100) X
--br, --brightness	: Set image brightness (0 to 100) X
--sa, --saturation	: Set image saturation (-100 to 100)
-
-'''
-
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
@@ -57,74 +44,74 @@ class App(customtkinter.CTk):
         self.geometry(str(int(self.monitor_width*0.3))+"x"+str(self.monitor_height))
         self.title("Raspberry PI Camera")
 
-        # create the main frame on which other elements will be rendered
-        self.frame = customtkinter.CTkFrame(master=self)
-        self.frame.pack(pady=10, padx=10, fill="both", expand=True)
-
-
-        '''self.canvas = tkinter.Canvas(self.frame, bg = "black", confine=False, borderwidth= 0, height=self.monitor_height, width=int(self.monitor_width*0.3))
-        self.canvas.pack()'''
+        # create tabview
+        self.tabview = customtkinter.CTkTabview(self, height=self.monitor_height, width=int(self.monitor_width*0.3))
+        self.tabview.grid(row=0, column=0, padx=(0, 0), pady=(0, 0), sticky="nsew")
+        self.tabview.add("Controls")
+        self.tabview.add("Captured Images")
+        self.tabview.tab("Controls").grid_columnconfigure(0, weight=1)
+        self.tabview.tab("Captured Images").grid_columnconfigure(0, weight=1)
 
 
         # set camera angle rotation options
-        self.rotation_options = customtkinter.CTkOptionMenu(self.frame, values=self.rotation_option_values, command=self.set_rotation)
-        self.rotation_options.pack(pady=10, padx=10)
+        self.rotation_options = customtkinter.CTkOptionMenu(self.tabview.tab("Controls"), values=self.rotation_option_values, command=self.set_rotation, width=int(self.monitor_width*0.25))
+        self.rotation_options.grid(row=0, column=0,pady=10, padx=10)
         self.rotation_options.set("Rotation Degree")
 
         # set image modes
-        self.mode_options = customtkinter.CTkOptionMenu(self.frame, values=self.mode_option_values, command=self.set_mode)
-        self.mode_options.pack(pady=10, padx=10)
+        self.mode_options = customtkinter.CTkOptionMenu(self.tabview.tab("Controls"), values=self.mode_option_values, command=self.set_mode, width=int(self.monitor_width*0.25))
+        self.mode_options.grid(row=1, column=0,pady=10, padx=10)
         self.mode_options.set("Modes")
 
         # set image sharpness levels
-        self.sharpness_label = customtkinter.CTkLabel(master=self.frame, justify=tkinter.LEFT, text="Sharpness: "+self.sharpness)
-        self.sharpness_label.pack(pady=0, padx=10)
+        self.sharpness_label = customtkinter.CTkLabel(master=self.tabview.tab("Controls"), justify=tkinter.LEFT, text="Sharpness: "+self.sharpness, width=int(self.monitor_width*0.25))
+        self.sharpness_label.grid(row=2, column=0,pady=0, padx=10)
 
-        self.sharpness_slider = customtkinter.CTkSlider(master=self.frame, command=self.set_sharpness, from_=-100, to=100, number_of_steps=200, hover=True)
-        self.sharpness_slider.pack(pady=0, padx=10)
+        self.sharpness_slider = customtkinter.CTkSlider(master=self.tabview.tab("Controls"), command=self.set_sharpness, from_=-100, to=100, number_of_steps=200, hover=True, width=int(self.monitor_width*0.25))
+        self.sharpness_slider.grid(row=3, column=0,pady=0, padx=10)
         self.sharpness_slider.set(int(self.sharpness))
 
         # set image contrast levels
-        self.contrast_label = customtkinter.CTkLabel(master=self.frame, justify=tkinter.LEFT, text="Contrast: "+self.contrast)
-        self.contrast_label.pack(pady=0, padx=10)
+        self.contrast_label = customtkinter.CTkLabel(master=self.tabview.tab("Controls"), justify=tkinter.LEFT, text="Contrast: "+self.contrast, width=int(self.monitor_width*0.25))
+        self.contrast_label.grid(row=4, column=0,pady=0, padx=10)
 
-        self.contrast_slider = customtkinter.CTkSlider(master=self.frame, command=self.set_contrast, from_=-100, to=100, number_of_steps=200, hover=True)
-        self.contrast_slider.pack(pady=0, padx=10)
+        self.contrast_slider = customtkinter.CTkSlider(master=self.tabview.tab("Controls"), command=self.set_contrast, from_=-100, to=100, number_of_steps=200, hover=True, width=int(self.monitor_width*0.25))
+        self.contrast_slider.grid(row=5, column=0,pady=0, padx=10)
         self.contrast_slider.set(int(self.contrast))
 
         # set image brightness levels
-        self.brightness_label = customtkinter.CTkLabel(master=self.frame, justify=tkinter.LEFT, text="Brightness: "+self.brightness)
-        self.brightness_label.pack(pady=0, padx=10)
+        self.brightness_label = customtkinter.CTkLabel(master=self.tabview.tab("Controls"), justify=tkinter.LEFT, text="Brightness: "+self.brightness, width=int(self.monitor_width*0.25))
+        self.brightness_label.grid(row=6, column=0,pady=0, padx=10)
 
-        self.brightness_slider = customtkinter.CTkSlider(master=self.frame, command=self.set_brightness, from_=-100, to=100, number_of_steps=200, hover=True)
-        self.brightness_slider.pack(pady=0, padx=10)
+        self.brightness_slider = customtkinter.CTkSlider(master=self.tabview.tab("Controls"), command=self.set_brightness, from_=-100, to=100, number_of_steps=200, hover=True, width=int(self.monitor_width*0.25))
+        self.brightness_slider.grid(row=7, column=0,pady=0, padx=10)
         self.brightness_slider.set(int(self.brightness))
 
         # set image saturation levels
-        self.saturation_label = customtkinter.CTkLabel(master=self.frame, justify=tkinter.LEFT, text="Saturation: "+self.saturation)
-        self.saturation_label.pack(pady=0, padx=10)
+        self.saturation_label = customtkinter.CTkLabel(master=self.tabview.tab("Controls"), justify=tkinter.LEFT, text="Saturation: "+self.saturation, width=int(self.monitor_width*0.25))
+        self.saturation_label.grid(row=8, column=0,pady=0, padx=10)
 
-        self.saturation_slider = customtkinter.CTkSlider(master=self.frame, command=self.set_saturation, from_=-100, to=100, number_of_steps=200, hover=True)
-        self.saturation_slider.pack(pady=0, padx=10)
+        self.saturation_slider = customtkinter.CTkSlider(master=self.tabview.tab("Controls"), command=self.set_saturation, from_=-100, to=100, number_of_steps=200, hover=True, width=int(self.monitor_width*0.25))
+        self.saturation_slider.grid(row=9, column=0,pady=0, padx=10)
         self.saturation_slider.set(int(self.saturation))
 
         # create image capture button
-        self.capture_button = customtkinter.CTkButton(master=self.frame, command=self.capture_image, text="Capture Image", corner_radius=90, width=5)
-        self.capture_button.pack(pady=10, padx=0)
+        self.capture_button = customtkinter.CTkButton(master=self.tabview.tab("Controls"), command=self.capture_image, text="Capture Image", corner_radius=90, width=int(self.monitor_width*0.25))
+        self.capture_button.grid(row=10, column=0,pady=10, padx=0)
 
         # create image save location button
-        self.file_save_location_button = customtkinter.CTkButton(master=self.frame, command=self.file_save_browse_button, text="Save Location", corner_radius=90, width=5)
-        self.file_save_location_button.pack(pady=10, padx=0)
+        self.file_save_location_button = customtkinter.CTkButton(master=self.tabview.tab("Controls"), command=self.file_save_browse_button, text="Save Location", corner_radius=90, width=int(self.monitor_width*0.25))
+        self.file_save_location_button.grid(row=11, column=0,pady=10, padx=0)
 
         # create status textbox
-        self.status_text = customtkinter.CTkTextbox(master=self.frame, width=int(self.monitor_width*0.3), height=50)
-        self.status_text.pack(pady=0, padx=10)
+        self.status_text = customtkinter.CTkTextbox(master=self.tabview.tab("Captured Images"), width=int(self.monitor_width*0.25), height=50)
+        self.status_text.grid(row=0, column=0,pady=0, padx=10)
         self.status_text.insert("0.0", "Click Capture to capture an image")
         self.status_text.configure(state="disabled")
 
         # create label which displays the current captured image
-        self.status_label_image = customtkinter.CTkLabel(master=self.frame, justify=tkinter.LEFT, text="", image="")
-        self.status_label_image.pack(pady=0, padx=10)
+        self.status_label_image = customtkinter.CTkLabel(master=self.tabview.tab("Captured Images"), justify=tkinter.LEFT, text="", image="", width=int(self.monitor_width*0.25))
+        self.status_label_image.grid(row=1, column=0,pady=0, padx=10)
 
         self.start_preview()
 
@@ -230,8 +217,8 @@ class App(customtkinter.CTk):
             self.kill_preview()
             process_instance = subprocess.run(command, check=True, shell=True)
 
-            disk_image = Image.open(self.capture_path + image_name).resize((int(self.monitor_width*0.3), int(self.monitor_width*0.3)))
-            img = customtkinter.CTkImage(disk_image, size=(int(self.monitor_width*0.3), int(self.monitor_width*0.3)))
+            disk_image = Image.open(self.capture_path + image_name).resize((int(self.monitor_width*0.25), int(self.monitor_width*0.25)))
+            img = customtkinter.CTkImage(disk_image, size=(int(self.monitor_width*0.25), int(self.monitor_width*0.25)))
 
             self.change_textbox_text(self.status_text, self.capture_path + image_name)
             self.status_label_image.configure(image=img)

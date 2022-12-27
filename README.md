@@ -21,11 +21,11 @@ https://github.com/TomSchimansky/CustomTkinter
 ## Features
 - After the app opens, it starts camera preview
 - You can adjust camera rotation and also select different modes
-- When you change camera rotation and/or mode, the preview gets automatically refreshed
+- Furthermore, you can adjust brightness, sharpness, contrast and saturation of the image from the app
+- When you change any of the settings, the preview gets automatically refreshed
 - When satisfied, click on `(Capture Image)` button and the image will be captured
-- The image path will be displayed in the status box (default path: ~/Images). You can adjust this path in code OR browse for the image save location via `(Save Location)` button in the app
-- The captured image will be displayed at the bottom of the app
-- Also, you can adjust the default camera angle in code
+- The image path will be displayed in the status box in `[Captured Images]` tab (default path: ~/Images). You can adjust this path in code OR browse for the image save location via `(Save Location)` button in the app
+- The captured image will be displayed in `[Captured Images]` tab
 
 ## Screenshots
 * Note: The screenshots are not up to date. The latest app may look different than the images captured below  
@@ -43,4 +43,4 @@ https://github.com/TomSchimansky/CustomTkinter
 |Release|Date|Features|
 |-------|----|--------|
 |0.0.1|Dec 26, 2022|Initial Release|
-|0.0.2|Dec 27, 2022|Added current image view inside the app; rounded buttons; allowed ability to select image save location; removed padding from rotation text; changed rotation element UI type; added new elements for brightness, sharpness, contrast, saturation|
+|0.0.2|Dec 27, 2022|Added current image view inside the app; rounded buttons; allowed ability to select image save location; removed padding from rotation text; changed rotation element UI type; added new elements for brightness, sharpness, contrast, saturation; divided elements into two tabs|

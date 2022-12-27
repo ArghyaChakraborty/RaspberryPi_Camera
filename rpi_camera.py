@@ -1,14 +1,18 @@
 import os
-from time import time
+import time
 import subprocess
 from subprocess import check_output
 from threading import Thread
 import tkinter
 import customtkinter
+from PIL import Image
+
+IMAGE_SAVE_DIRECTORY = "~/Images/"
+DEFAULT_IMAGE = "images/rpi_logo.jpg"
+DEFAULT_CAMERA_ANGLE_DEGREES = 90
 
 customtkinter.set_appearance_mode("dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
-
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -17,8 +21,9 @@ class App(customtkinter.CTk):
         self.mode_options = [
             "none", "negative", "solarise", "sketch", "denoise", "emboss", "oilpaint", "hatch", "gpen", "pastel", "watercolour", "film", "blur", "saturation", "colourswap", "washedout", "posterise", "colourpoint", "colourbalance", "cartoon"
         ]
-        self.default_camera_rotation_deg = "90"
-        self.capture_path = self.make_path("~/Images/")
+        self.default_camera_rotation_deg = str(DEFAULT_CAMERA_ANGLE_DEGREES)
+        self.capture_path = self.make_path(os.path.abspath(os.path.expandvars(os.path.expanduser(IMAGE_SAVE_DIRECTORY))))+"/"
+        self.default_image = os.path.abspath(os.path.dirname(__file__))+"/"+DEFAULT_IMAGE
         self.reset_capture_characteristics()
         self.monitor_width, self.monitor_height = self.winfo_screenwidth(), self.winfo_screenheight()
         print(self.monitor_width, self.monitor_height)
@@ -43,10 +48,13 @@ class App(customtkinter.CTk):
         self.capture_button = customtkinter.CTkButton(master=self.frame, command=self.capture_image, text="Capture")
         self.capture_button.pack(pady=10, padx=10)
 
-        self.status_text = customtkinter.CTkTextbox(master=self.frame, width=160, height=70)
-        self.status_text.pack(pady=10, padx=10)
-        self.status_text.insert("0.0", "")
+        self.status_text = customtkinter.CTkTextbox(master=self.frame, width=int(self.monitor_width*0.3), height=50)
+        self.status_text.pack(pady=0, padx=10)
+        self.status_text.insert("0.0", "Click Capture to capture an image")
         self.status_text.configure(state="disabled")
+
+        self.status_label_image = customtkinter.CTkLabel(master=self.frame, justify=tkinter.LEFT, text="", image="")
+        self.status_label_image.pack(pady=0, padx=10)
 
         self.start_preview()
 
@@ -111,7 +119,7 @@ class App(customtkinter.CTk):
 
     def capture_image(self):
         print(self.capture_characteristics)
-        milliseconds = int(time() * 1000)
+        milliseconds = int(time.time() * 1000)
         image_name = str("image_"+str(milliseconds)+".jpg")
         try:
             command = "raspistill --output "+self.capture_path + image_name+" "
@@ -120,10 +128,19 @@ class App(customtkinter.CTk):
             print("Camera command: "+command)
             self.kill_preview()
             process_instance = subprocess.run(command, check=True, shell=True)
+
+            disk_image = Image.open(self.capture_path + image_name).resize((int(self.monitor_width*0.3), int(self.monitor_width*0.3)))
+            img = customtkinter.CTkImage(disk_image, size=(int(self.monitor_width*0.3), int(self.monitor_width*0.3)))
+
             self.status_text.configure(state="normal")
             self.status_text.delete("0.0", "100000.0")
-            self.status_text.insert("0.0", "Image captured at:\n"+self.capture_path + image_name)
+            self.status_text.insert("0.0", self.capture_path + image_name)
+            self.status_text.configure(width = int(self.monitor_width*0.3))
+            self.status_text.configure(height = 50)
             self.status_text.configure(state="disabled")
+
+            self.status_label_image.configure(image=img)
+
             self.start_preview()
         except Exception as ex:
             print("Exception: "+str(ex))

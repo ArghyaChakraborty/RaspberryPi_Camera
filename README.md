@@ -5,11 +5,14 @@ This Python `tkinter` app provides some of the camera options provided by Raspbe
 ## raspistill command help
 Please check file [raspistill-help](raspistill-help)
 
+## customtkinter repository
+https://github.com/TomSchimansky/CustomTkinter
+
 ## Dependencies
 - The Raspberry Pi camera should be installed and enabled
 - The Raspberry Pi should be connected to a monitor
 - Python 3.7+
-- Python modules: customtkinter
+- Python modules: customtkinter, Pillow
 
 ## Starting Raspberry Pi Camera App
 - Open a command prompt in Raspberry PI and execute:
@@ -20,7 +23,9 @@ Please check file [raspistill-help](raspistill-help)
 - You can adjust camera rotation and also select different modes
 - When you camera rotation and/or mode, the preview gets automatically refreshed
 - When satisfied, click on [Capture] button and the image will be captured
-- The image path will be displayed in the status box
+- The image path will be displayed in the status box (default path: ~/Images). You can adjust this path in code
+- The captured image will be displayed at the bottom of the app
+- Also, you can adjust the default camera angle in code
 
 ## Screenshots
 ![Raspberry Pi Camera App](./images/rpi_image0.jpg)
@@ -34,3 +39,4 @@ Please check file [raspistill-help](raspistill-help)
 |Release|Date|Features|
 |-------|----|--------|
 |0.0.1|Dec 26, 2022|Initial Release|
+|0.0.2|Dec 27, 2022|Added current image view inside the app|

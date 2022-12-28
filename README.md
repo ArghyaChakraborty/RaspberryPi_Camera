@@ -26,7 +26,7 @@ This will allow you to explore some basic features of the app while keeping in m
 - You can adjust camera rotation and also select different modes
 - Furthermore, you can adjust brightness, sharpness, contrast and saturation of the image from the app
 - When you change any of the settings, the preview gets automatically refreshed
-- When satisfied, click on `(Capture Image)` button and the image will be captured
+- When satisfied, click on `(Capture Image)` button and the image will be captured and you will receive a success message
 - The image path will be displayed in the status box in `[Captured Image]` tab (default path: ~/Images). You can adjust this path by clicking `(Save Location)` button in the app
 - The captured image will be displayed in `[Captured Image]` tab. Note: in order to view the actual image, maximize/minimize/format it, you need to visit the image save location and open the image from there. The `[Captured Image]` tab only shows a quick preview of the captured image
 - This app also allows you to run a test/demo version without needing a Raspberry PI or Raspberry PI camera. Check `Starting Raspberry Pi Camera App` for details
@@ -43,4 +43,4 @@ This will allow you to explore some basic features of the app while keeping in m
 |-------|----|--------|
 |0.0.1|Dec 26, 2022|Initial Release|
 |0.0.2|Dec 27, 2022|Added current image view inside the app; rounded buttons; allowed ability to select image save location; removed padding from rotation text; changed rotation element UI type; added new elements for brightness, sharpness, contrast, saturation; divided elements into two tabs|
-|0.0.3|Dec 28, 2022|Added ability to extend the camera module to add new modules as necessary; Added ability to run a demo version of the app without Raspberry PI or camera; Fixed the preview area and placed it next to the app itself|
+|0.0.3|Dec 28, 2022|Added ability to extend the camera module to add new modules as necessary; Added ability to run a demo version of the app without Raspberry PI or camera; Fixed the preview area and placed it next to the app itself; Added image capture success dialog|

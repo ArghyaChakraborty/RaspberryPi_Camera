@@ -43,4 +43,4 @@ This will allow you to explore some basic features of the app while keeping in m
 |-------|----|--------|
 |0.0.1|Dec 26, 2022|Initial Release|
 |0.0.2|Dec 27, 2022|Added current image view inside the app; rounded buttons; allowed ability to select image save location; removed padding from rotation text; changed rotation element UI type; added new elements for brightness, sharpness, contrast, saturation; divided elements into two tabs|
-|0.0.3|Dec 28, 2022|Added ability to extend the camera module to add new modules as necessary; Added ability to run a demo version of the app without Raspberry PI or camera|
+|0.0.3|Dec 28, 2022|Added ability to extend the camera module to add new modules as necessary; Added ability to run a demo version of the app without Raspberry PI or camera; Fixed the preview area and placed it next to the app itself|

@@ -5,6 +5,7 @@ from threading import Thread
 from multiprocessing import Process
 import copy
 import tkinter
+from tkinter import messagebox
 import customtkinter
 from PIL import Image
 from camera_modules import CameraModuleFactory
@@ -40,8 +41,6 @@ class App(customtkinter.CTk):
         self.default_image = os.path.abspath(os.path.dirname(__file__))+"/"+DEFAULT_IMAGE
         self.reset_capture_characteristics()
         self.monitor_width, self.monitor_height = self.winfo_screenwidth(), self.winfo_screenheight()
-        print(self.monitor_width, self.monitor_height)
-        self.camera_module = CameraModuleFactory.get_camera_module(TEST_FLAG)
 
         # set location of the main window
         self.geometry(str(int(self.monitor_width*0.3))+"x"+str(self.monitor_height)+"+0+0")
@@ -116,6 +115,14 @@ class App(customtkinter.CTk):
         self.status_label_image = customtkinter.CTkLabel(master=self.tabview.tab("Captured Image"), justify=tkinter.LEFT, text="", image="", width=int(self.monitor_width*0.25))
         self.status_label_image.grid(row=1, column=0,pady=0, padx=10)
 
+        self.update()
+        self.app_width, self.app_height = self.winfo_width(), self.winfo_height()
+        self.app_x, self.app_y = self.winfo_x(), self.winfo_y()
+        print("Monitor width x height", self.monitor_width, self.monitor_height)
+        print("Widget width x height", self.app_width, self.app_height)
+        print("Widget X x Y", self.app_x, self.app_y)
+        self.camera_module = CameraModuleFactory.get_camera_module(TEST_FLAG)
+
         # start camera preview
         self.start_preview()
 
@@ -132,8 +139,8 @@ class App(customtkinter.CTk):
 
     def __start_preview_thread(self):
         config = copy.deepcopy(self.capture_characteristics)
-        preview_width = int(self.monitor_width*0.65)
-        preview_start_x = self.monitor_width - preview_width
+        preview_width = int(self.monitor_width - self.app_width)
+        preview_start_x = self.app_x + self.app_width
         config["--preview"] = "'"+str(preview_start_x)+",0,"+str(preview_width)+","+str(self.monitor_height)+"'"
         self.camera_module.start_preview(config) 
 
@@ -203,15 +210,16 @@ class App(customtkinter.CTk):
         config = copy.deepcopy(self.capture_characteristics)
         self.kill_preview()
         image_path = self.camera_module.capture_image(self.capture_path, config)
-        self.start_preview()
         disk_image = Image.open(image_path).resize((int(self.monitor_width*0.25), int(self.monitor_width*0.25)))
         img = customtkinter.CTkImage(disk_image, size=(int(self.monitor_width*0.25), int(self.monitor_width*0.25)))
         self.change_textbox_text(self.status_text, image_path)
         self.status_label_image.configure(image=img)
+        confirmation_dialog = messagebox.showinfo(title="Success", message="Image Captured. Check Captured Image tab")
+        self.start_preview()
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1].lower() == "test":
+    if len(sys.argv) > 1 and "test" in sys.argv[1].lower():
         TEST_FLAG = True
     app = App()
     app.protocol("WM_DELETE_WINDOW", app.handle_window_closure)

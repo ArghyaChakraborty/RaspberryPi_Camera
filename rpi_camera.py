@@ -1,13 +1,15 @@
 #!/usr/bin/python3
 import os
-import time
-import subprocess
-from subprocess import check_output
+import sys
 from threading import Thread
+from multiprocessing import Process
+import copy
 import tkinter
 import customtkinter
 from PIL import Image
+from camera_modules import CameraModuleFactory
 
+TEST_FLAG = False
 IMAGE_SAVE_DIRECTORY = "~/Images/"
 DEFAULT_IMAGE = "images/rpi_logo.jpg"
 DEFAULT_TIMER_MS = 500
@@ -39,18 +41,19 @@ class App(customtkinter.CTk):
         self.reset_capture_characteristics()
         self.monitor_width, self.monitor_height = self.winfo_screenwidth(), self.winfo_screenheight()
         print(self.monitor_width, self.monitor_height)
+        self.camera_module = CameraModuleFactory.get_camera_module(TEST_FLAG)
 
         # set location of the main window
-        self.geometry(str(int(self.monitor_width*0.3))+"x"+str(self.monitor_height))
+        self.geometry(str(int(self.monitor_width*0.3))+"x"+str(self.monitor_height)+"+0+0")
         self.title("Raspberry PI Camera")
 
         # create tabview
         self.tabview = customtkinter.CTkTabview(self, height=self.monitor_height, width=int(self.monitor_width*0.3))
         self.tabview.grid(row=0, column=0, padx=(0, 0), pady=(0, 0), sticky="nsew")
         self.tabview.add("Controls")
-        self.tabview.add("Captured Images")
+        self.tabview.add("Captured Image")
         self.tabview.tab("Controls").grid_columnconfigure(0, weight=1)
-        self.tabview.tab("Captured Images").grid_columnconfigure(0, weight=1)
+        self.tabview.tab("Captured Image").grid_columnconfigure(0, weight=1)
 
 
         # set camera angle rotation options
@@ -104,44 +107,35 @@ class App(customtkinter.CTk):
         self.file_save_location_button.grid(row=11, column=0,pady=10, padx=0)
 
         # create status textbox
-        self.status_text = customtkinter.CTkTextbox(master=self.tabview.tab("Captured Images"), width=int(self.monitor_width*0.25), height=50)
+        self.status_text = customtkinter.CTkTextbox(master=self.tabview.tab("Captured Image"), width=int(self.monitor_width*0.25), height=50)
         self.status_text.grid(row=0, column=0,pady=0, padx=10)
         self.status_text.insert("0.0", "Click Capture to capture an image")
         self.status_text.configure(state="disabled")
 
         # create label which displays the current captured image
-        self.status_label_image = customtkinter.CTkLabel(master=self.tabview.tab("Captured Images"), justify=tkinter.LEFT, text="", image="", width=int(self.monitor_width*0.25))
+        self.status_label_image = customtkinter.CTkLabel(master=self.tabview.tab("Captured Image"), justify=tkinter.LEFT, text="", image="", width=int(self.monitor_width*0.25))
         self.status_label_image.grid(row=1, column=0,pady=0, padx=10)
 
+        # start camera preview
         self.start_preview()
 
     def handle_window_closure(self):
-        self.kill_preview()
+        self.camera_module.kill_preview()
         self.destroy()
 
     def kill_preview(self):
-        try:
-            pid = check_output(["pidof", "raspistill"])
-            pid = pid.decode("utf-8").split("\n")[0]
-            process_instance = subprocess.run("kill -9 "+pid, check=True, shell=True)
-        except Exception as ex:
-            print("Preview Kill Exception: "+str(ex))
+        self.camera_module.kill_preview()
 
     def start_preview(self):
         self.thread = Thread(target=self.__start_preview_thread)
         self.thread.start()
 
     def __start_preview_thread(self):
-        try:
-            preview_width = int(self.monitor_width*0.65)
-            preview_start_x = self.monitor_width - preview_width
-            command = "raspistill --preview '"+str(preview_start_x)+",0,"+str(preview_width)+","+str(self.monitor_height)+"' --keypress "
-            for k,v in self.capture_characteristics.items():
-                command += str(k)+" "+str(v)+" "
-            print("Camera command: "+command)
-            process_instance = subprocess.run(command, check=True, shell=True)
-        except Exception as ex:
-            print("Preview Exception: "+str(ex))      
+        config = copy.deepcopy(self.capture_characteristics)
+        preview_width = int(self.monitor_width*0.65)
+        preview_start_x = self.monitor_width - preview_width
+        config["--preview"] = "'"+str(preview_start_x)+",0,"+str(preview_width)+","+str(self.monitor_height)+"'"
+        self.camera_module.start_preview(config) 
 
     def make_path(self, path):
         if not os.path.exists(path):
@@ -206,30 +200,19 @@ class App(customtkinter.CTk):
         textbox.configure(state="disabled")
 
     def capture_image(self):
-        print(self.capture_characteristics)
-        milliseconds = int(time.time() * 1000)
-        image_name = str("image_"+str(milliseconds)+".jpg")
-        try:
-            command = "raspistill --output "+self.capture_path + image_name+" "
-            for k,v in self.capture_characteristics.items():
-                command += str(k)+" "+str(v)+" "
-            print("Camera command: "+command)
-            self.kill_preview()
-            process_instance = subprocess.run(command, check=True, shell=True)
-
-            disk_image = Image.open(self.capture_path + image_name).resize((int(self.monitor_width*0.25), int(self.monitor_width*0.25)))
-            img = customtkinter.CTkImage(disk_image, size=(int(self.monitor_width*0.25), int(self.monitor_width*0.25)))
-
-            self.change_textbox_text(self.status_text, self.capture_path + image_name)
-            self.status_label_image.configure(image=img)
-
-            self.start_preview()
-        except Exception as ex:
-            print("Exception: "+str(ex))
-
+        config = copy.deepcopy(self.capture_characteristics)
+        self.kill_preview()
+        image_path = self.camera_module.capture_image(self.capture_path, config)
+        self.start_preview()
+        disk_image = Image.open(image_path).resize((int(self.monitor_width*0.25), int(self.monitor_width*0.25)))
+        img = customtkinter.CTkImage(disk_image, size=(int(self.monitor_width*0.25), int(self.monitor_width*0.25)))
+        self.change_textbox_text(self.status_text, image_path)
+        self.status_label_image.configure(image=img)
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1].lower() == "test":
+        TEST_FLAG = True
     app = App()
     app.protocol("WM_DELETE_WINDOW", app.handle_window_closure)
     app.mainloop()

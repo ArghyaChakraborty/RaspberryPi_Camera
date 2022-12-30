@@ -198,7 +198,7 @@ class App(customtkinter.CTk):
         dirname = filedialog.askdirectory()
         print(dirname)
         self.capture_path = os.path.abspath(os.path.expandvars(os.path.expanduser(dirname)))+"/"
-        self.change_textbox_text(self.status_text, "Image save path: "+self.capture_path)
+        self.provide_confirmation("Success", "Images will be saved at: "+self.capture_path)
 
     def change_textbox_text(self, textbox: customtkinter.CTkTextbox, new_text: str):
         textbox.configure(state="normal")
@@ -214,8 +214,11 @@ class App(customtkinter.CTk):
         img = customtkinter.CTkImage(disk_image, size=(int(self.monitor_width*0.25), int(self.monitor_width*0.25)))
         self.change_textbox_text(self.status_text, image_path)
         self.status_label_image.configure(image=img)
-        confirmation_dialog = messagebox.showinfo(title="Success", message="Image Captured. Check Captured Image tab")
+        self.provide_confirmation("Success", "Image Captured. Check Captured Image tab")
         self.start_preview()
+
+    def provide_confirmation(self, title: str, message: str):
+        confirmation_dialog = messagebox.showinfo(title=title, message=message)
 
 
 if __name__ == "__main__":
@@ -224,3 +227,4 @@ if __name__ == "__main__":
     app = App()
     app.protocol("WM_DELETE_WINDOW", app.handle_window_closure)
     app.mainloop()
+

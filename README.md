@@ -9,7 +9,7 @@ Please check file [raspistill-help](raspistill-help)
 https://github.com/TomSchimansky/CustomTkinter
 
 ## Dependencies
-- The Raspberry Pi camera should be installed and enabled
+- The Raspberry Pi camera should be installed and enabled (unless you want to just test the app)
 - The Raspberry Pi should be connected to a monitor
 - Python 3.7+
 - Python modules: customtkinter, Pillow
@@ -19,7 +19,7 @@ https://github.com/TomSchimansky/CustomTkinter
 `python3 rpi_camera.py`
 - If you just want to test the app in your computer (not RaspBerry PI) or in a RaspBerry PI without a camera, execute:  
 `python3 rpi_camera.py test`  
-This will allow you to explore some basic features of the app while keeping in mins that many setting changes may not work in this mode
+This will allow you to explore some basic features of the app while keeping in mind that most of the setting changes will not work in this mode
 
 ## Features
 - After the app opens, it starts camera preview
